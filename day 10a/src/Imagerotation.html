@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Rotation</title>
+  <style>
+    body {
+      text-align: center;
+      margin-top: 50px;
+    }
+    h1 {
+      background-color: black;
+      color: white;
+      padding: 10px;
+    }
+    img {
+      height: 400px;
+      width: 400px;
+      transition: transform 0.5s ease;
+    }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1>Image Rotation</h1>
+  <img id="myImage" src="image2.jpg" alt="Rotating Image">
+  <br>
+  
+  <button onclick="rotateLeft()">LEFT ROTATE</button>
+  <button onclick="rotateImage()">ROTATE</button>
+  <button onclick="rotateRight()">RIGHT ROTATE</button>
+  <input type="range" id="rotationSlider" min="0" max="360" value="0" step="1" oninput="rotateImage()">
+
+  <script>
+    let rotation = 0;
+    function rotateImage() {
+      rotation += 90; 
+      document.getElementById("myImage").style.transform = `rotate(${rotation}deg)`;
+    }
+    function rotateLeft() {
+      rotation -= 90;
+      document.getElementById("myImage").style.transform = `rotate(${rotation}deg)`;
+    }
+    function rotateRight() {
+      rotation += 90;
+      document.getElementById("myImage").style.transform = `rotate(${rotation}deg)`;
+    }
+  </script>
+</body>
+</html>
