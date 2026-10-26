@@ -1,56 +1,81 @@
-import { useEffect, useState } from 'react'
-import './App.css'
-import Footer from './Components/Footer' ;
-import Header from './Components/Header' ;
-import Product from './Components/Product' ;
-function App() {
-  const [products, setProducts] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+import React, { useState } from "react";
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('https://dummyjson.com/products')
+const App = () => {
+  const [task, setTask] = useState("");
+  const [todoList, setTodoList] = useState([]);
+  const [editIndex, setEditIndex] = useState(null);
 
-        if (!response.ok) {
-          throw new Error('Products could not be loaded.')
-        }
-
-        const data = await response.json()
-        setProducts(data.products)
-      } catch (fetchError) {
-        setError(fetchError.message)
-      } finally {
-        setIsLoading(false)
-      }
+  const addHandler = () => {
+    if (task.trim() === "") {
+      alert("Please enter a task!");
+      return;
     }
 
-    fetchProducts()
-  }, [])
+    if (editIndex !== null) {
+      const updatedList = [...todoList];
+      updatedList[editIndex] = task.trim();
+      setTodoList(updatedList);
+      setEditIndex(null);
+    } else {
+      setTodoList([...todoList, task.trim()]);
+    }
+
+    console.log("Task added:", task.trim());
+    setTask("");
+  };
+
+  const editHandler = (index) => {
+    setTask(todoList[index]);
+    setEditIndex(index);
+  };
+
+  const deleteHandler = (index) => {
+    console.log(todoList[index]);
+
+    setTodoList(todoList.filter((_, i) => i !== index));
+
+    if (editIndex === index) {
+      setTask("");
+      setEditIndex(null);
+    } else if (editIndex !== null && editIndex > index) {
+      setEditIndex(editIndex - 1);
+    }
+  };
 
   return (
-    <>
-      <Header />
-      <main className="product-page">
-      <header className="page-header">
-        <p className="eyebrow">Fresh arrivals</p>
-        <h1>Product catalog</h1>
-        <p>Browse the latest products from DummyJSON.</p>
-      </header>
+    <div>
+      <h1>TODO List</h1>
 
-      {isLoading && <p className="status">Loading products...</p>}
-      {error && <p className="status error">{error}</p>}
+      <input
+        type="text"
+        value={task}
+        placeholder="Enter your task"
+        onChange={(e) => setTask(e.target.value)}
+      />
 
-      {!isLoading && !error && (
-        <section id="products" className="product-grid" aria-label="Products">
-          <Product products={products} />
-        </section>
-      )}
-      </main>
-      <Footer />
-    </>
-  )
-}
+      <button onClick={addHandler}>
+        {editIndex !== null ? "UPDATE" : "ADD"}
+      </button>
 
-export default App
+      <br />
+      <br />
+
+      {todoList.map((task, index) => (
+        <div key={index}>
+          <span>{task}</span>{" "}
+          <button onClick={() => editHandler(index)}>
+            EDIT
+          </button>{" "}
+          <button onClick={() => deleteHandler(index)}>
+            DELETE
+          </button>
+
+          <br />
+          <br />
+        </div>
+      ))}
+    </div>
+  );
+};
+
+export default App;
